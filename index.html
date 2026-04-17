@@ -884,41 +884,46 @@ async function generateQuiz() {
     return;
   }
 
-  const count = Math.max(1, Math.min(20,
-    parseInt(document.getElementById('numQuestions').value) || 5));
+  const count = parseInt(document.getElementById('numQuestions').value) || 5;
 
   setLoading(true);
   hideError();
-  questions = [];
-  document.getElementById('questionList').innerHTML = '';
-  document.getElementById('resultsSection').style.display = 'none';
 
   try {
-    let result = [];
+    const prompt = `
+Buat ${count} soal pilihan ganda tentang ${subject} untuk siswa SMA.
 
-    for (let i = 1; i <= count; i++) {
-      result.push({
-        nomor: i,
-        pertanyaan: `Soal ${i}: Jelaskan konsep ${subject}!`,
-        tipe: questionType === 'pilihan_ganda' ? 'pilihan ganda' : 'esai',
-        pilihan: questionType === 'pilihan_ganda'
-          ? [
-              `${subject} adalah konsep dasar`,
-              `${subject} tidak penting`,
-              `${subject} hanya teori`,
-              `${subject} tidak digunakan`
-            ]
-          : undefined,
-        jawaban_benar: `${subject} adalah konsep dasar`,
-        jawaban_esai: `${subject} adalah materi penting yang perlu dipahami.`,
-        langkah_langkah_jawaban: `Penjelasan tentang ${subject} secara sederhana dan logis.`
-      });
+Format JSON seperti ini:
+[
+  {
+    "pertanyaan": "...",
+    "pilihan": ["A", "B", "C", "D"],
+    "jawaban_benar": "A",
+    "pembahasan": "..."
+  }
+]
+
+Jangan beri penjelasan lain selain JSON.
+`;
+
+    const data = await callAI(
+  [
+    {
+      role: "user",
+      content: prompt
     }
+  ],
+  "Kamu adalah AI pembuat soal yang cerdas. Jawab hanya dalam format JSON valid tanpa teks tambahan."
+);
 
-    questions = result.map((q, i) => ({
-      ...q,
+    questions = data.map((q, i) => ({
       id: crypto.randomUUID(),
-      nomor: i + 1
+      nomor: i + 1,
+      pertanyaan: q.pertanyaan,
+      tipe: "pilihan ganda",
+      pilihan: q.pilihan,
+      jawaban_benar: q.jawaban_benar,
+      langkah_langkah_jawaban: q.pembahasan
     }));
 
     renderQuestions();
@@ -926,16 +931,13 @@ async function generateQuiz() {
     document.getElementById('resultsTitle').textContent =
       `${questions.length} Soal — ${subject}`;
 
-    updateFab();
-    updateSelectAll();
-
   } catch (e) {
-    showError('Gagal membuat soal: ' + e.message);
+    console.log(e);
+    showError('AI gagal, cek API key / format JSON');
   } finally {
     setLoading(false);
   }
 }
-
 // ─── ADD MORE ─────────────────────────────────────────────────────
 async function addMoreQuestions() {
   const subject = document.getElementById('subject').value.trim();
