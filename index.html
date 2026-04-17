@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generator Soal Cerdas ✦ AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<style>
+  :root {
+    --bg: #0d0f14;
+    --bg2: #13161e;
+    --bg3: #1a1e29;
+    --border: #252a38;
+    --border2: #2e3548;
+    --text: #e8eaf0;
+    --text2: #8890a8;
+    --text3: #4f566b;
+    --gold: #d4a843;
+    --gold2: #f0c561;
+    --purple: #7c6af5;
+    --purple2: #a594f9;
+    --green: #3ecf8e;
+    --red: #e5534b;
+    --amber: #e8a838;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(124,106,245,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(212,168,67,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+  header { padding: 52px 0 40px; text-align: center; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(124,106,245,0.12);
+    border: 1px solid rgba(124,106,245,0.25);
+    color: var(--purple2);
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  h1 em { font-style: italic; color: var(--gold); }
+
+  .subtitle { color: var(--text2); font-size: 15px; max-width: 440px; margin: 0 auto; font-weight: 300; }
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  input[type=text], input[type=number], select, textarea {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(124,106,245,0.12);
+  }
+
+  input::placeholder { color: var(--text3); }
+
+  select option { background: var(--bg3); color: var(--text); }
+
+  .seg {
+    display: flex;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 3px;
+    gap: 3px;
+  }
+
+  .seg-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .seg-btn.active { background: var(--purple); color: #fff; box-shadow: 0 1px 8px rgba(124,106,245,0.35); }
+  .seg-btn:hover:not(.active) { background: var(--border2); color: var(--text); }
+
+  .check-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .check-row:hover { border-color: var(--purple); }
+  .check-row input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--purple); cursor: pointer; }
+  .check-row .check-label { font-size: 13px; color: var(--text); user-select: none; }
+  .check-row .check-sub { font-size: 11px; color: var(--text2); margin-top: 1px; }
+
+  .btn-primary {
+    width: 100%;
+    background: var(--purple);
+    color: #fff;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 14px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: var(--purple2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(124,106,245,0.35);
+  }
+
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--purple2);
+    border: 1px solid var(--purple);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+
+  .btn-outline:hover:not(:disabled) { background: rgba(124,106,245,0.1); }
+  .btn-outline:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+  }
+
+  .error-box {
+    background: rgba(229,83,75,0.1);
+    border: 1px solid rgba(229,83,75,0.3);
+    color: #ff7f7a;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .results-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--text);
+  }
+
+  .results-actions { display: flex; align-items: center; gap: 10px; }
+
+  .q-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 14px;
+    position: relative;
+    transition: border-color 0.2s, transform 0.15s;
+    animation: fadeUp 0.35s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-card:hover { border-color: var(--border2); }
+  .q-card.regenerating { opacity: 0.5; pointer-events: none; }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .q-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--purple2);
+    background: rgba(124,106,245,0.1);
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin-top: 1px;
+  }
+
+  .q-text { flex: 1; color: var(--text); font-size: 14.5px; line-height: 1.65; }
+  .q-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+  .icon-btn {
+    background: none;
+    border: none;
+    color: var(--text3);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 6px;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+  }
+
+  .icon-btn:hover { background: var(--border2); color: var(--text); }
+  .icon-btn.active { color: var(--green); }
+  .icon-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13.5px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .opt.correct {
+    background: rgba(62,207,142,0.07);
+    border-color: rgba(62,207,142,0.3);
+    color: #67dda9;
+  }
+
+  .opt-letter {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--purple2);
+    min-width: 20px;
+    padding-top: 1px;
+  }
+
+  .answer-toggle {
+    background: none;
+    border: none;
+    color: var(--purple2);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.15s;
+  }
+
+  .answer-toggle:hover { color: var(--purple); }
+
+  .answer-box {
+    margin-top: 14px;
+    padding: 16px;
+    background: var(--bg3);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .answer-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 6px;
+  }
+
+  .answer-text { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+  .solution-box {
+    margin-top: 12px;
+    padding: 14px 16px;
+    background: rgba(212,168,67,0.04);
+    border: 1px solid rgba(212,168,67,0.15);
+    border-radius: 8px;
+  }
+
+  .solution-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 8px;
+  }
+
+  .solution-text { font-size: 13.5px; color: var(--text2); line-height: 1.7; white-space: pre-wrap; }
+
+  .panel-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+  }
+
+  .panel-overlay.open { opacity: 1; pointer-events: all; }
+
+  .panel {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: 100%;
+    max-width: 480px;
+    background: var(--bg2);
+    border-left: 1px solid var(--border);
+    z-index: 51;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .panel.open { transform: translateX(0); }
+
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .panel-title { font-family: 'Instrument Serif', serif; font-size: 1.2rem; font-weight: 400; }
+  .panel-toolbar { display: flex; gap: 4px; align-items: center; }
+  .panel-body { flex: 1; overflow-y: auto; padding: 18px 20px; }
+
+  .panel-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: var(--text3);
+    gap: 10px;
+  }
+
+  .panel-q-item {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    position: relative;
+    font-size: 13.5px;
+  }
+
+  .panel-q-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--purple2);
+    margin-bottom: 6px;
+  }
+
+  .panel-q-text { color: var(--text); line-height: 1.5; margin-bottom: 8px; }
+  .panel-q-opts { display: flex; flex-direction: column; gap: 4px; padding-left: 14px; }
+  .panel-q-opt { font-size: 12.5px; color: var(--text2); display: flex; gap: 8px; }
+
+  .panel-q-remove {
+    position: absolute;
+    top: 10px; right: 10px;
+    background: none;
+    border: none;
+    color: var(--text3);
+    cursor: pointer;
+    padding: 3px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .panel-q-item:hover .panel-q-remove { opacity: 1; }
+  .panel-q-remove:hover { color: var(--red); background: rgba(229,83,75,0.1); }
+
+  .fab {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 40;
+    background: var(--gold);
+    color: #0d0f14;
+    border: none;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(212,168,67,0.4);
+    transition: all 0.2s;
+    font-size: 20px;
+  }
+
+  .fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(212,168,67,0.5); }
+
+  .fab-badge {
+    position: absolute;
+    top: -4px; right: -4px;
+    background: var(--purple);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+  .select-label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text2); cursor: pointer; }
+  .select-label input { accent-color: var(--purple); cursor: pointer; }
+
+  .add-more-wrap { display: flex; justify-content: center; padding: 12px 0 28px; }
+
+  [data-tip] { position: relative; }
+  [data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-size: 11px;
+    white-space: nowrap;
+    padding: 4px 8px;
+    border-radius: 5px;
+    pointer-events: none;
+    z-index: 99;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 24px;
+    max-width: 540px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .modal h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+
+  textarea.script-area {
+    width: 100%;
+    height: 160px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    resize: none;
+  }
+
+  .config-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .config-row:hover { border-color: var(--border2); }
+  .config-row input[type=checkbox] { accent-color: var(--purple); cursor: pointer; }
+  .config-row label { font-size: 13.5px; cursor: pointer; }
+
+  .score-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .score-grid .form-group label { margin-bottom: 4px; display: block; }
+
+  .katex { font-size: 1em !important; }
+
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.full { grid-column: 1; }
+    header { padding: 32px 0 28px; }
+    .fab { bottom: 18px; right: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="badge">✦ Powered by Claude AI</div>
+    <h1>Generator Soal <em>Cerdas</em></h1>
+    <p class="subtitle">Buat soal berkualitas tinggi dalam hitungan detik dengan kecerdasan buatan</p>
+  </header>
+
+  <div class="card">
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Topik / Materi Soal</label>
+        <input type="text" id="subject" placeholder="Contoh: Persamaan Kuadrat, Fotosintesis, Perang Diponegoro..." />
+      </div>
+
+      <div class="form-group">
+        <label>Jenjang Pendidikan</label>
+        <select id="gradeLevel">
+          <option value="PAUD / TK">PAUD / TK</option>
+          <option value="Kelas 1 SD">Kelas 1 SD</option>
+          <option value="Kelas 2 SD">Kelas 2 SD</option>
+          <option value="Kelas 3 SD">Kelas 3 SD</option>
+          <option value="Kelas 4 SD">Kelas 4 SD</option>
+          <option value="Kelas 5 SD">Kelas 5 SD</option>
+          <option value="Kelas 6 SD">Kelas 6 SD</option>
+          <option value="Kelas 7 SMP">Kelas 7 SMP</option>
+          <option value="Kelas 8 SMP">Kelas 8 SMP</option>
+          <option value="Kelas 9 SMP">Kelas 9 SMP</option>
+          <option value="Kelas 10 SMA">Kelas 10 SMA</option>
+          <option value="Kelas 11 SMA">Kelas 11 SMA</option>
+          <option value="Kelas 12 SMA">Kelas 12 SMA</option>
+          <option value="Mahasiswa">Mahasiswa</option>
+          <option value="Umum" selected>Umum</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Jumlah Soal (1–20)</label>
+        <input type="number" id="numQuestions" value="5" min="1" max="20" />
+      </div>
+
+      <div class="form-group full">
+        <label>Tingkat Kesulitan</label>
+        <div class="seg" id="diffSeg">
+          <button class="seg-btn" data-val="mudah">Mudah</button>
+          <button class="seg-btn active" data-val="sedang">Sedang</button>
+          <button class="seg-btn" data-val="sukar">Sukar</button>
+        </div>
+      </div>
+
+      <div class="form-group full">
+        <label>Jenis Soal</label>
+        <div class="seg" id="typeSeg">
+          <button class="seg-btn active" data-val="pilihan_ganda">Pilihan Ganda</button>
+          <button class="seg-btn" data-val="esai">Esai</button>
+        </div>
+      </div>
+
+      <div id="choicesRow" class="form-group full">
+        <label>Jumlah Pilihan</label>
+        <div class="seg" id="choicesSeg">
+          <button class="seg-btn active" data-val="4">4 Pilihan</button>
+          <button class="seg-btn" data-val="5">5 Pilihan</button>
+        </div>
+      </div>
+
+      <div class="form-group full">
+        <label class="check-row" for="hotsCheck">
+          <input type="checkbox" id="hotsCheck">
+          <div>
+            <div class="check-label">Mode HOTS (Higher Order Thinking Skills)</div>
+            <div class="check-sub">Soal level analisis, evaluasi & kreasi (Taksonomi Bloom C4–C6)</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div style="margin-top:20px">
+      <button class="btn-primary" id="generateBtn" onclick="generateQuiz()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+        Buat Soal Sekarang
+      </button>
+    </div>
+  </div>
+
+  <div class="error-box" id="errorBox" style="display:none"></div>
+
+  <div id="resultsSection" style="display:none">
+    <div class="results-header">
+      <div class="results-title" id="resultsTitle">Hasil Soal</div>
+      <div class="results-actions">
+        <label class="select-label">
+          <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this.checked)">
+          Pilih Semua
+        </label>
+      </div>
+    </div>
+    <div id="questionList"></div>
+    <div class="add-more-wrap">
+      <button class="btn-outline" id="addMoreBtn" onclick="addMoreQuestions()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        <span id="addMoreLabel">Tambah Soal Lagi</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab" id="fab" style="display:none" onclick="openPanel()" data-tip="Lihat Dokumen Soal">
+  📄
+  <span class="fab-badge" id="fabBadge">0</span>
+</button>
+
+<!-- DOCUMENT PANEL -->
+<div class="panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
+<div class="panel" id="panel">
+  <div class="panel-head">
+    <div class="panel-title" id="panelTitle">Dokumen Soal</div>
+    <div class="panel-toolbar">
+      <button class="icon-btn" data-tip="Kunci Jawaban" onclick="downloadAnswerKey()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+      </button>
+      <button class="icon-btn" data-tip="Google Form Script" onclick="openGFormModal()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M8 8h8M8 16h5"/></svg>
+      </button>
+      <button class="icon-btn" data-tip="Salin Teks" onclick="copyQuestions()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+      <button class="icon-btn" data-tip="Print / PDF" onclick="printDocument()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      </button>
+      <button class="icon-btn" data-tip="Hapus Semua" onclick="clearDocument()" style="color:var(--text3)">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      </button>
+      <button class="icon-btn" onclick="closePanel()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="panel-body" id="panelBody">
+    <div class="panel-empty" id="panelEmpty">
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h4"/></svg>
+      <div>
+        <strong style="color:var(--text2)">Belum ada soal dipilih</strong>
+        <p style="font-size:12px;margin-top:4px">Klik ikon + pada soal untuk menambahkan ke dokumen</p>
+      </div>
+    </div>
+    <div id="panelList"></div>
+  </div>
+</div>
+
+<!-- GFORM MODAL -->
+<div class="modal-overlay" id="gformOverlay" onclick="closeGFormModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <h3>Google Form Script</h3>
+      <button class="icon-btn" onclick="closeGFormModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div id="gformConfig">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:14px">Konfigurasi formulir Google yang akan dibuat:</p>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">
+        <div class="config-row"><input type="checkbox" id="cfgName" checked><label for="cfgName">Nama Lengkap</label></div>
+        <div class="config-row"><input type="checkbox" id="cfgClass" checked><label for="cfgClass">Kelas</label></div>
+        <div class="config-row"><input type="checkbox" id="cfgAbsen" checked><label for="cfgAbsen">Nomor Absen</label></div>
+      </div>
+      <div class="score-grid">
+        <div class="form-group">
+          <label>Poin Pilihan Ganda</label>
+          <input type="number" id="mcPts" value="2" min="0">
+        </div>
+        <div class="form-group">
+          <label>Poin Esai</label>
+          <input type="number" id="essayPts" value="0" min="0">
+        </div>
+      </div>
+      <button class="btn-primary" style="margin-top:16px" onclick="showGFormScript()">Generate Script</button>
+    </div>
+    <div id="gformScript" style="display:none">
+      <p style="font-size:12px;color:var(--text2);margin-bottom:10px">Salin script ini ke Google Apps Script (script.google.com):</p>
+      <textarea class="script-area" id="scriptArea" readonly></textarea>
+      <button class="btn-primary" style="margin-top:12px" onclick="copyScript()" id="copyScriptBtn">Salin Script</button>
+      <button class="btn-outline" style="margin-top:10px;width:100%;justify-content:center" onclick="showGFormConfig()">← Konfigurasi Ulang</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────
+let questions = [];
+let docQuestions = [];
+let difficulty = 'sedang';
+let questionType = 'pilihan_ganda';
+let numChoices = 4;
+
+// ─── SEGMENT CONTROLS ────────────────────────────────────────────
+function setupSeg(id, callback) {
+  const seg = document.getElementById(id);
+  seg.addEventListener('click', e => {
+    const btn = e.target.closest('.seg-btn');
+    if (!btn) return;
+    seg.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    callback(btn.dataset.val);
+  });
+}
+
+setupSeg('diffSeg', v => difficulty = v);
+setupSeg('typeSeg', v => {
+  questionType = v;
+  document.getElementById('choicesRow').style.display = v === 'pilihan_ganda' ? '' : 'none';
+});
+setupSeg('choicesSeg', v => numChoices = parseInt(v));
+
+// ─── CLAUDE API (terintegrasi) ────────────────────────────────────
+async function callClaude(messages, systemPrompt) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 4000,
+      system: systemPrompt,
+      messages
+    })
+  });
+
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData?.error?.message || `HTTP ${res.status}`);
+  }
+
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message || 'API error');
+
+  const text = data.content.map(b => b.text || '').join('');
+  // Strip markdown code fences if present
+  const clean = text.replace(/^```(?:json)?\n?/m, '').replace(/\n?```$/m, '').trim();
+
+  // Try parsing – if Claude returned a single object wrap it
+  try {
+    const parsed = JSON.parse(clean);
+    return Array.isArray(parsed) ? parsed : [parsed];
+  } catch(e) {
+    // Try to extract JSON array or object from text
+    const arrMatch = clean.match(/\[[\s\S]*\]/);
+    if (arrMatch) return JSON.parse(arrMatch[0]);
+    const objMatch = clean.match(/\{[\s\S]*\}/);
+    if (objMatch) return [JSON.parse(objMatch[0])];
+    throw new Error('Format respons tidak valid. Coba lagi.');
+  }
+}
+
+function buildSystemPrompt(count) {
+  const subject = document.getElementById('subject').value.trim();
+  const grade = document.getElementById('gradeLevel').value;
+  const hots = document.getElementById('hotsCheck').checked;
+  const typeLabel = questionType === 'pilihan_ganda' ? 'pilihan ganda' : 'esai';
+  const choicesLine = questionType === 'pilihan_ganda'
+    ? `- Setiap soal memiliki tepat ${numChoices} pilihan jawaban`
+    : '';
+
+  return `Kamu adalah guru ahli dan berpengalaman dalam membuat soal pendidikan berkualitas tinggi.
+
+Tugasmu: Buat TEPAT ${count} soal tentang topik yang diminta.
+- Jenjang: ${grade}
+- Tingkat kesulitan: ${difficulty}
+- Jenis soal: ${typeLabel}
+${choicesLine}
+${hots ? '- HOTS (Bloom C4-C6): fokus pada analisis, evaluasi, dan kreasi' : ''}
+
+INSTRUKSI FORMAT: Kembalikan HANYA array JSON yang valid. Jangan tambahkan teks, penjelasan, atau markdown.
+
+Format setiap elemen:
+${questionType === 'pilihan_ganda' ? `{
+  "nomor": <angka>,
+  "pertanyaan": "<teks soal yang jelas>",
+  "tipe": "pilihan ganda",
+  "pilihan": ["<opsi 1>", "<opsi 2>", "<opsi 3>"${numChoices === 5 ? ', "<opsi 4>", "<opsi 5>"' : ', "<opsi 4>"'}],
+  "jawaban_benar": "<teks lengkap opsi yang benar, harus sama persis dengan salah satu elemen pilihan>",
+  "langkah_langkah_jawaban": "<penjelasan solusi yang mendidik>"
+}` : `{
+  "nomor": <angka>,
+  "pertanyaan": "<teks soal yang jelas>",
+  "tipe": "esai",
+  "jawaban_esai": "<kunci jawaban / poin-poin kunci>",
+  "langkah_langkah_jawaban": "<penjelasan solusi yang mendidik>"
+}`}
+
+PENTING:
+- Jangan pakai awalan huruf (a., b., dst.) di dalam teks pilihan
+- Soal harus unik, beragam, dan mendidik
+- jawaban_benar harus sama persis dengan salah satu string di array pilihan
+- Kembalikan HANYA JSON array, tidak ada teks lain`;
+}
+
+// ─── GENERATE ─────────────────────────────────────────────────────
+async function generateQuiz() {
+  const subject = document.getElementById('subject').value.trim();
+  if (!subject) { showError('Topik soal tidak boleh kosong!'); return; }
+
+  const count = Math.max(1, Math.min(20, parseInt(document.getElementById('numQuestions').value) || 5));
+  setLoading(true);
+  hideError();
+  questions = [];
+  document.getElementById('questionList').innerHTML = '';
+  document.getElementById('resultsSection').style.display = 'none';
+
+  try {
+    const system = buildSystemPrompt(count);
+    const result = await callClaude([
+      { role: 'user', content: `Buat ${count} soal tentang "${subject}"` }
+    ], system);
+
+    questions = result.map((q, i) => ({ ...q, id: crypto.randomUUID(), nomor: i + 1 }));
+    renderQuestions();
+    document.getElementById('resultsSection').style.display = 'block';
+    document.getElementById('resultsTitle').textContent = `${questions.length} Soal — ${subject}`;
+    document.getElementById('addMoreLabel').textContent = `Tambah ${count} Soal Lagi`;
+    updateFab();
+    updateSelectAll();
+  } catch(e) {
+    showError('Gagal membuat soal: ' + e.message);
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ─── ADD MORE ─────────────────────────────────────────────────────
+async function addMoreQuestions() {
+  const subject = document.getElementById('subject').value.trim();
+  const count = Math.max(1, Math.min(20, parseInt(document.getElementById('numQuestions').value) || 5));
+  const btn = document.getElementById('addMoreBtn');
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner"></span> Menambahkan...`;
+
+  try {
+    const existing = questions.map((q, i) => `${i+1}. ${q.pertanyaan}`).join('\n');
+    const system = buildSystemPrompt(count);
+    const result = await callClaude([{
+      role: 'user',
+      content: `Soal yang sudah ada:\n${existing}\n\nBuat ${count} soal BARU yang berbeda tentang "${subject}".`
+    }], system);
+
+    const newQ = result.map((q, i) => ({ ...q, id: crypto.randomUUID(), nomor: questions.length + i + 1 }));
+    questions = [...questions, ...newQ];
+    newQ.forEach(q => renderSingleQuestion(q, true));
+    document.getElementById('resultsTitle').textContent = `${questions.length} Soal — ${subject}`;
+    updateSelectAll();
+    renderMath();
+  } catch(e) {
+    showError('Gagal menambahkan soal: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg><span id="addMoreLabel">Tambah ${count} Soal Lagi</span>`;
+  }
+}
+
+// ─── REGENERATE ───────────────────────────────────────────────────
+async function regenerate(id) {
+  const card = document.getElementById('card-' + id);
+  card.classList.add('regenerating');
+
+  const subject = document.getElementById('subject').value.trim();
+  const others = questions.filter(q => q.id !== id).map(q => '- ' + q.pertanyaan).join('\n');
+  const system = buildSystemPrompt(1);
+
+  try {
+    const result = await callClaude([{
+      role: 'user',
+      content: `Buat SATU soal baru tentang "${subject}". Jangan mirip dengan:\n${others}\n\nKembalikan array JSON dengan satu elemen.`
+    }], system);
+
+    const q = questions.find(q => q.id === id);
+    const newQ = { ...result[0], id, nomor: q.nomor };
+    questions = questions.map(q => q.id === id ? newQ : q);
+    docQuestions = docQuestions.map(q => q.id === id ? newQ : q);
+    updateCardDOM(newQ);
+    renderPanelList();
+  } catch(e) {
+    showError('Gagal regenerate: ' + e.message);
+  } finally {
+    card.classList.remove('regenerating');
+  }
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────
+function renderQuestions() {
+  const list = document.getElementById('questionList');
+  list.innerHTML = '';
+  questions.forEach(q => renderSingleQuestion(q, false));
+  setTimeout(() => renderMath(), 100);
+}
+
+function renderSingleQuestion(q, animate) {
+  const list = document.getElementById('questionList');
+  const isDoc = docQuestions.some(d => d.id === q.id);
+  const isMC = q.tipe === 'pilihan ganda' || q.tipe === 'pilihan_ganda';
+
+  const div = document.createElement('div');
+  div.className = 'q-card';
+  div.id = 'card-' + q.id;
+  if (animate) div.style.animationDelay = '0ms';
+
+  div.innerHTML = `
+    <div class="q-header">
+      <span class="q-number">Soal ${q.nomor}</span>
+      <div class="q-text" id="qtext-${q.id}">${escapeHtml(q.pertanyaan)}</div>
+      <div class="q-actions">
+        <button class="icon-btn ${isDoc ? 'active' : ''}" id="addbtn-${q.id}" onclick="toggleDoc('${q.id}')" data-tip="${isDoc ? 'Sudah ditambahkan' : 'Tambah ke dokumen'}">
+          ${isDoc
+            ? `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>`
+            : `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>`}
+        </button>
+        <button class="icon-btn" onclick="regenerate('${q.id}')" data-tip="Ganti soal ini">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
+      </div>
+    </div>
+    ${isMC && q.pilihan ? `<div class="options" id="opts-${q.id}">
+      ${q.pilihan.map((opt, i) => `<div class="opt" id="opt-${q.id}-${i}">
+        <span class="opt-letter">${String.fromCharCode(97+i)}.</span>
+        <span>${escapeHtml(opt)}</span>
+      </div>`).join('')}
+    </div>` : ''}
+    <div>
+      <button class="answer-toggle" onclick="toggleAnswer('${q.id}')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <span id="tog-${q.id}">Lihat Jawaban</span>
+      </button>
+      <div id="ans-${q.id}" style="display:none"></div>
+    </div>
+  `;
+
+  list.appendChild(div);
+}
+
+function updateCardDOM(q) {
+  const card = document.getElementById('card-' + q.id);
+  if (!card) return;
+  const list = document.getElementById('questionList');
+  const idx = Array.from(list.children).indexOf(card);
+  list.removeChild(card);
+  renderSingleQuestion(q, false);
+  const newCard = document.getElementById('card-' + q.id);
+  if (newCard && idx < list.children.length - 1) {
+    list.insertBefore(newCard, list.children[idx]);
+  }
+  setTimeout(() => renderMath(), 100);
+}
+
+function toggleAnswer(id) {
+  const box = document.getElementById('ans-' + id);
+  const tog = document.getElementById('tog-' + id);
+  const q = questions.find(q => q.id === id);
+  if (!q) return;
+
+  if (box.style.display === 'none') {
+    const isMC = q.tipe === 'pilihan ganda' || q.tipe === 'pilihan_ganda';
+    const ansText = isMC ? q.jawaban_benar : q.jawaban_esai;
+
+    if (isMC && q.pilihan) {
+      q.pilihan.forEach((opt, i) => {
+        const el = document.getElementById(`opt-${id}-${i}`);
+        if (el && opt === q.jawaban_benar) el.classList.add('correct');
+      });
+    }
+
+    box.innerHTML = `
+      <div class="answer-box">
+        <div class="answer-label">Jawaban</div>
+        <div class="answer-text">${escapeHtml(ansText || '-')}</div>
+      </div>
+      ${q.langkah_langkah_jawaban ? `
+      <div class="solution-box">
+        <div class="solution-label">Pembahasan</div>
+        <div class="solution-text">${escapeHtml(q.langkah_langkah_jawaban)}</div>
+      </div>` : ''}
+    `;
+
+    box.style.display = 'block';
+    tog.textContent = 'Sembunyikan';
+    setTimeout(() => renderMath(document.getElementById('card-' + id)), 50);
+  } else {
+    box.style.display = 'none';
+    tog.textContent = 'Lihat Jawaban';
+    if (q.pilihan) {
+      q.pilihan.forEach((opt, i) => {
+        const el = document.getElementById(`opt-${id}-${i}`);
+        if (el) el.classList.remove('correct');
+      });
+    }
+  }
+}
+
+// ─── DOCUMENT PANEL ───────────────────────────────────────────────
+function toggleDoc(id) {
+  const q = questions.find(q => q.id === id);
+  if (!q) return;
+  const isIn = docQuestions.some(d => d.id === id);
+  if (isIn) {
+    docQuestions = docQuestions.filter(d => d.id !== id);
+  } else {
+    docQuestions = [...docQuestions, q];
+  }
+  updateDocBtn(id, !isIn);
+  updateFab();
+  updateSelectAll();
+  renderPanelList();
+}
+
+function updateDocBtn(id, isIn) {
+  const btn = document.getElementById('addbtn-' + id);
+  if (!btn) return;
+  btn.className = `icon-btn ${isIn ? 'active' : ''}`;
+  btn.dataset.tip = isIn ? 'Sudah ditambahkan' : 'Tambah ke dokumen';
+  btn.innerHTML = isIn
+    ? `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>`
+    : `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>`;
+}
+
+function toggleSelectAll(checked) {
+  if (checked) {
+    const existing = new Set(docQuestions.map(d => d.id));
+    docQuestions = [...docQuestions, ...questions.filter(q => !existing.has(q.id))];
+    questions.forEach(q => updateDocBtn(q.id, true));
+  } else {
+    const currentIds = new Set(questions.map(q => q.id));
+    docQuestions = docQuestions.filter(d => !currentIds.has(d.id));
+    questions.forEach(q => updateDocBtn(q.id, false));
+  }
+  updateFab();
+  renderPanelList();
+}
+
+function updateSelectAll() {
+  const all = questions.length > 0 && questions.every(q => docQuestions.some(d => d.id === q.id));
+  document.getElementById('selectAll').checked = all;
+}
+
+function updateFab() {
+  const fab = document.getElementById('fab');
+  const badge = document.getElementById('fabBadge');
+  fab.style.display = docQuestions.length > 0 ? 'flex' : 'none';
+  badge.textContent = docQuestions.length;
+}
+
+function openPanel() {
+  document.getElementById('panelOverlay').classList.add('open');
+  document.getElementById('panel').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('panelOverlay').classList.remove('open');
+  document.getElementById('panel').classList.remove('open');
+}
+
+function renderPanelList() {
+  const list = document.getElementById('panelList');
+  const empty = document.getElementById('panelEmpty');
+  document.getElementById('panelTitle').textContent = `Dokumen Soal (${docQuestions.length})`;
+
+  if (docQuestions.length === 0) {
+    empty.style.display = 'flex';
+    list.innerHTML = '';
+    return;
+  }
+
+  empty.style.display = 'none';
+  list.innerHTML = docQuestions.map((q, i) => {
+    const isMC = q.tipe === 'pilihan ganda' || q.tipe === 'pilihan_ganda';
+    return `<div class="panel-q-item">
+      <button class="panel-q-remove" onclick="removeFromDoc('${q.id}')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="panel-q-num">SOAL ${i + 1}</div>
+      <div class="panel-q-text">${escapeHtml(q.pertanyaan)}</div>
+      ${isMC && q.pilihan ? `<div class="panel-q-opts">
+        ${q.pilihan.map((opt, idx) => `<div class="panel-q-opt">
+          <span style="color:var(--purple2);font-family:'DM Mono',monospace;font-size:11px">${String.fromCharCode(97+idx)}.</span>
+          <span>${escapeHtml(opt)}</span>
+        </div>`).join('')}
+      </div>` : `<div style="font-size:12px;color:var(--text3);padding-left:12px;margin-top:4px;font-style:italic">Soal esai</div>`}
+    </div>`;
+  }).join('');
+
+  setTimeout(() => renderMath(list), 50);
+}
+
+function removeFromDoc(id) {
+  docQuestions = docQuestions.filter(d => d.id !== id);
+  updateDocBtn(id, false);
+  updateFab();
+  updateSelectAll();
+  renderPanelList();
+}
+
+function clearDocument() {
+  if (!confirm('Hapus semua soal dari dokumen?')) return;
+  const ids = new Set(docQuestions.map(d => d.id));
+  docQuestions = [];
+  ids.forEach(id => updateDocBtn(id, false));
+  updateFab();
+  updateSelectAll();
+  renderPanelList();
+}
+
+// ─── EXPORT / COPY ────────────────────────────────────────────────
+function copyQuestions() {
+  if (docQuestions.length === 0) { alert('Dokumen kosong'); return; }
+  const subject = document.getElementById('subject').value;
+  let text = `Materi: ${subject}\n\n`;
+  docQuestions.forEach((q, i) => {
+    text += `${i+1}. ${q.pertanyaan}\n`;
+    const isMC = q.tipe === 'pilihan ganda' || q.tipe === 'pilihan_ganda';
+    if (isMC && q.pilihan) {
+      q.pilihan.forEach((opt, idx) => { text += `   ${String.fromCharCode(97+idx)}. ${opt}\n`; });
+    }
+    text += '\n';
+  });
+  navigator.clipboard.writeText(text).then(() => alert('Berhasil disalin!'));
+}
+
+function downloadAnswerKey() {
+  if (docQuestions.length === 0) { alert('Dokumen kosong'); return; }
+  const subject = document.getElementById('subject').value;
+  let content = `KUNCI JAWABAN\nMateri: ${subject}\n${'='.repeat(40)}\n\n`;
+  docQuestions.forEach((q, i) => {
+    const isMC = q.tipe === 'pilihan ganda' || q.tipe === 'pilihan_ganda';
+    let ans = '';
+    if (isMC) {
+      const idx = q.pilihan?.findIndex(p => p === q.jawaban_benar) ?? -1;
+      ans = idx >= 0 ? `${String.fromCharCode(97+idx)}. ${q.jawaban_benar}` : (q.jawaban_benar || '-');
+    } else {
+      ans = q.jawaban_esai || '-';
+    }
+    content += `${i+1}. ${ans}\n`;
+  });
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `kunci_${subject.replace(/\s+/g,'_')}.txt`;
+  a.click();
+}
+
+function printDocument() {
+  if (docQuestions.length === 0) { alert('Dokumen kosong'); return; }
+  const subject = document.getElementById('subject').value;
+  const win = window.open('', '_blank');
+  let body = '';
+  docQuestions.forEach((q, i) => {
+    const isMC = q.tipe === 'pilihan ganda' || q.tipe === 'pilihan_ganda';
+    body += `<div style="margin-bottom:18px;page-break-inside:avoid">`;
+    body += `<p><strong>${i+1}.</strong> ${escapeHtml(q.pertanyaan)}</p>`;
+    if (isMC && q.pilihan) {
+      body += '<ol type="a" style="margin:6px 0 0 20px">';
+      q.pilihan.forEach(opt => { body += `<li>${escapeHtml(opt)}</li>`; });
+      body += '</ol>';
+    } else {
+      body += `<p style="height:60px;border-bottom:1px solid #ccc;margin-top:8px"></p>`;
+    }
+    body += '</div>';
+  });
+  win.document.write(`<html><head><title>${subject}</title><style>
+    body{font-family:'Times New Roman',serif;font-size:12pt;padding:30px;color:#000}
+    h1{font-size:16pt;text-align:center;margin-bottom:8px}
+    h2{font-size:12pt;text-align:center;color:#555;margin-bottom:24px}
+  </style></head><body>
+    <h1>${escapeHtml(subject.toUpperCase())}</h1>
+    <h2>Soal — ${docQuestions.length} pertanyaan</h2>
+    ${body}
+  </body></html>`);
+  win.document.close();
+  win.focus();
+  win.onload = () => { win.print(); };
+}
+
+// ─── GOOGLE FORM ─────────────────────────────────────────────────
+function openGFormModal() {
+  if (docQuestions.length === 0) { alert('Dokumen kosong'); return; }
+  document.getElementById('gformOverlay').classList.add('open');
+  document.getElementById('gformConfig').style.display = 'block';
+  document.getElementById('gformScript').style.display = 'none';
+}
+
+function closeGFormModal() {
+  document.getElementById('gformOverlay').classList.remove('open');
+}
+
+function showGFormScript() {
+  document.getElementById('gformConfig').style.display = 'none';
+  document.getElementById('gformScript').style.display = 'block';
+  document.getElementById('scriptArea').value = generateScript();
+}
+
+function showGFormConfig() {
+  document.getElementById('gformConfig').style.display = 'block';
+  document.getElementById('gformScript').style.display = 'none';
+}
+
+function copyScript() {
+  navigator.clipboard.writeText(document.getElementById('scriptArea').value).then(() => {
+    const btn = document.getElementById('copyScriptBtn');
+    btn.textContent = '✓ Tersalin!';
+    setTimeout(() => { btn.textContent = 'Salin Script'; }, 2000);
+  });
+}
+
+function generateScript() {
+  const subject = document.getElementById('subject').value.replace(/'/g, "\\'");
+  const incName = document.getElementById('cfgName').checked;
+  const incClass = document.getElementById('cfgClass').checked;
+  const incAbsen = document.getElementById('cfgAbsen').checked;
+  const mcPts = document.getElementById('mcPts').value;
+  const essayPts = document.getElementById('essayPts').value;
+  const qs = JSON.stringify(docQuestions, null, 2);
+  return `function createQuizFromQuestions() {
+  var form = FormApp.create('${subject}');
+  form.setIsQuiz(true);
+  form.setAllowResponseEdits(false);
+  form.setLimitOneResponsePerUser(false);
+  
+  ${incName ? "form.addTextItem().setTitle('Nama Lengkap').setRequired(true);" : ""}
+  ${incClass ? "form.addTextItem().setTitle('Kelas').setRequired(true);" : ""}
+  ${incAbsen ? "form.addTextItem().setTitle('Nomor Absen').setRequired(true);" : ""}
+  
+  var questions = ${qs};
+  
+  questions.forEach(function(q, index) {
+    var isMC = q.pilihan && q.pilihan.length > 0;
+    if (isMC) {
+      var item = form.addMultipleChoiceItem()
+        .setTitle((index + 1) + ". " + q.pertanyaan)
+        .setPoints(${mcPts});
+      var choices = q.pilihan.map(function(opt) {
+        return item.createChoice(opt, opt === q.jawaban_benar);
+      });
+      item.setChoices(choices);
+    } else {
+      form.addParagraphTextItem()
+        .setTitle((index + 1) + ". " + q.pertanyaan)
+        .setPoints(${essayPts});
+    }
+  });
+  
+  Logger.log('Form berhasil dibuat: ' + form.getPublishedUrl());
+}`;
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────
+function setLoading(v) {
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = v;
+  btn.innerHTML = v
+    ? `<span class="spinner"></span> Membuat soal...`
+    : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg> Buat Soal Sekarang`;
+}
+
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.textContent = msg;
+  box.style.display = 'block';
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function hideError() {
+  document.getElementById('errorBox').style.display = 'none';
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function renderMath(el) {
+  if (!window.renderMathInElement) return;
+  renderMathInElement(el || document.body, {
+    delimiters: [
+      { left: '$$', right: '$$', display: true },
+      { left: '$', right: '$', display: false }
+    ],
+    throwOnError: false
+  });
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('subject').addEventListener('keydown', e => {
+    if (e.key === 'Enter') generateQuiz();
+  });
+});
+</script>
+
+</body>
+</html>
