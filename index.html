@@ -846,85 +846,34 @@ setupSeg('typeSeg', v => {
 setupSeg('choicesSeg', v => numChoices = parseInt(v));
 
 // ─── CLAUDE API (terintegrasi) ────────────────────────────────────
-async function callClaude(messages, systemPrompt) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+async function callAI(messages, systemPrompt) {
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer API_KEY_KAMU'
+    },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 4000,
-      system: systemPrompt,
-      messages
+      model: "mistralai/mistral-7b-instruct:free",
+      messages: [
+        { role: "system", content: systemPrompt },
+        ...messages
+      ]
     })
   });
 
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({}));
-    throw new Error(errData?.error?.message || `HTTP ${res.status}`);
-  }
-
   const data = await res.json();
-  if (data.error) throw new Error(data.error.message || 'API error');
 
-  const text = data.content.map(b => b.text || '').join('');
-  // Strip markdown code fences if present
-  const clean = text.replace(/^```(?:json)?\n?/m, '').replace(/\n?```$/m, '').trim();
-
-  // Try parsing – if Claude returned a single object wrap it
-  try {
-    const parsed = JSON.parse(clean);
-    return Array.isArray(parsed) ? parsed : [parsed];
-  } catch(e) {
-    // Try to extract JSON array or object from text
-    const arrMatch = clean.match(/\[[\s\S]*\]/);
-    if (arrMatch) return JSON.parse(arrMatch[0]);
-    const objMatch = clean.match(/\{[\s\S]*\}/);
-    if (objMatch) return [JSON.parse(objMatch[0])];
-    throw new Error('Format respons tidak valid. Coba lagi.');
+  if (!data.choices) {
+    console.log(data);
+    throw new Error("API error");
   }
-}
 
-function buildSystemPrompt(count) {
-  const subject = document.getElementById('subject').value.trim();
-  const grade = document.getElementById('gradeLevel').value;
-  const hots = document.getElementById('hotsCheck').checked;
-  const typeLabel = questionType === 'pilihan_ganda' ? 'pilihan ganda' : 'esai';
-  const choicesLine = questionType === 'pilihan_ganda'
-    ? `- Setiap soal memiliki tepat ${numChoices} pilihan jawaban`
-    : '';
+  const text = data.choices[0].message.content;
 
-  return `Kamu adalah guru ahli dan berpengalaman dalam membuat soal pendidikan berkualitas tinggi.
+  const clean = text.replace(/^```json/, '').replace(/```$/, '').trim();
 
-Tugasmu: Buat TEPAT ${count} soal tentang topik yang diminta.
-- Jenjang: ${grade}
-- Tingkat kesulitan: ${difficulty}
-- Jenis soal: ${typeLabel}
-${choicesLine}
-${hots ? '- HOTS (Bloom C4-C6): fokus pada analisis, evaluasi, dan kreasi' : ''}
-
-INSTRUKSI FORMAT: Kembalikan HANYA array JSON yang valid. Jangan tambahkan teks, penjelasan, atau markdown.
-
-Format setiap elemen:
-${questionType === 'pilihan_ganda' ? `{
-  "nomor": <angka>,
-  "pertanyaan": "<teks soal yang jelas>",
-  "tipe": "pilihan ganda",
-  "pilihan": ["<opsi 1>", "<opsi 2>", "<opsi 3>"${numChoices === 5 ? ', "<opsi 4>", "<opsi 5>"' : ', "<opsi 4>"'}],
-  "jawaban_benar": "<teks lengkap opsi yang benar, harus sama persis dengan salah satu elemen pilihan>",
-  "langkah_langkah_jawaban": "<penjelasan solusi yang mendidik>"
-}` : `{
-  "nomor": <angka>,
-  "pertanyaan": "<teks soal yang jelas>",
-  "tipe": "esai",
-  "jawaban_esai": "<kunci jawaban / poin-poin kunci>",
-  "langkah_langkah_jawaban": "<penjelasan solusi yang mendidik>"
-}`}
-
-PENTING:
-- Jangan pakai awalan huruf (a., b., dst.) di dalam teks pilihan
-- Soal harus unik, beragam, dan mendidik
-- jawaban_benar harus sama persis dengan salah satu string di array pilihan
-- Kembalikan HANYA JSON array, tidak ada teks lain`;
+  return JSON.parse(clean);
 }
 
 // ─── GENERATE ─────────────────────────────────────────────────────
