@@ -851,10 +851,11 @@ async function callAI(messages, systemPrompt) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': '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' // nanti kita bahas di step berikutnya
+      'Authorization': 'Bearer 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' // GANTI punyamu
     },
     body: JSON.stringify({
       model: "mistralai/mistral-7b-instruct:free",
+      temperature: 0.7,
       messages: [
         { role: "system", content: systemPrompt },
         ...messages
@@ -863,25 +864,21 @@ async function callAI(messages, systemPrompt) {
   });
 
   const data = await res.json();
+  console.log("RAW:", data);
 
   if (!data.choices) {
-    console.log(data);
-    throw new Error("API error");
+    throw new Error(data.error?.message || "API error");
   }
 
   let text = data.choices[0].message.content;
+  console.log("TEXT:", text);
 
-  // 🔥 cleaning lebih kuat
-  text = text
-    .replace(/```json/g, '')
-    .replace(/```/g, '')
-    .trim();
+  text = text.replace(/```json/g, '').replace(/```/g, '').trim();
 
   try {
     return JSON.parse(text);
   } catch (err) {
-    console.error("RAW AI OUTPUT:", text);
-    throw new Error("JSON tidak valid dari AI");
+    throw new Error("AI tidak mengembalikan JSON valid");
   }
 }
 // ─── GENERATE ─────────────────────────────────────────────────────
