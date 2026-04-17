@@ -851,7 +851,7 @@ async function callAI(messages, systemPrompt) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': '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'
+      'Authorization': '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' // nanti kita bahas di step berikutnya
     },
     body: JSON.stringify({
       model: "mistralai/mistral-7b-instruct:free",
@@ -869,13 +869,21 @@ async function callAI(messages, systemPrompt) {
     throw new Error("API error");
   }
 
-  const text = data.choices[0].message.content;
+  let text = data.choices[0].message.content;
 
-  const clean = text.replace(/^```json/, '').replace(/```$/, '').trim();
+  // 🔥 cleaning lebih kuat
+  text = text
+    .replace(/```json/g, '')
+    .replace(/```/g, '')
+    .trim();
 
-  return JSON.parse(clean);
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    console.error("RAW AI OUTPUT:", text);
+    throw new Error("JSON tidak valid dari AI");
+  }
 }
-
 // ─── GENERATE ─────────────────────────────────────────────────────
 async function generateQuiz() {
   const subject = document.getElementById('subject').value.trim();
